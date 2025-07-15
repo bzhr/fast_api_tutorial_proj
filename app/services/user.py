@@ -11,19 +11,24 @@ logger = logging.getLogger(__name__)
 
 def validate_and_store_github_user(user_data: dict, db: Session) -> GitHubUserModel:
     try:
-        # Validate using Pydantic
         validated = GitHubUserSchema(**user_data)
     except ValidationError as e:
         msg = f"Validation failed: {e}"
         logger.error(msg)
         raise ValueError(msg)  # noqa: B904
 
-        # Convert to DB model
     user_dict = validated.model_dump(mode="json")
-    db_user = GitHubUserModel(**user_dict)
 
-    # Save to DB
-    db.add(db_user)
+    user = db.query(GitHubUserModel).filter_by(login=user_dict["login"]).first()
+    if user:
+        logger.info(f"Updating existing user: {user.login}")
+        for key, value in user_dict.items():
+            setattr(user, key, value)
+    else:
+        logger.info(f"Creating new user: {user_dict['login']}")
+        user = GitHubUserModel(**user_dict)
+        db.add(user)
+
     db.commit()
-    db.refresh(db_user)
-    return db_user
+    db.refresh(user)
+    return user

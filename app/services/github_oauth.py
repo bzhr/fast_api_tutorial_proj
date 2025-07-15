@@ -8,40 +8,45 @@ from app.settings import AUTHORIZE_URL, CLIENT_ID, CLIENT_SECRET, REQUESTS_TIMEO
 logger = logging.getLogger(__name__)
 
 
-def get_github_authorization_url():
-    params = {
-        "client_id": CLIENT_ID,
-        "scope": "read:user",
-    }
-    return f"{AUTHORIZE_URL}?{urlencode(params)}"
+class GitHubAPI:
+    def __init__(self, client_id: str, client_secret: str, timeout: float):
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.timeout = timeout
+
+    def get_authorization_url(self) -> str:
+        params = {"client_id": self.client_id, "scope": "read:user"}
+        return f"{AUTHORIZE_URL}?{urlencode(params)}"
+
+    def exchange_code_for_token(self, code: str) -> str:
+        response = requests.post(
+            TOKEN_URL,
+            headers={"Accept": "application/json"},
+            data={
+                "client_id": self.client_id,
+                "client_secret": self.client_secret,
+                "code": code,
+            },
+            timeout=self.timeout,
+        )
+        data = response.json()
+        if "access_token" not in data:
+            logger.error("Token error: %s", data)
+            msg = "Token exchange failed"
+            logger.error(msg)
+            raise Exception(msg)
+        return data["access_token"]
+
+    def fetch_user(self, access_token: str) -> dict:
+        response = requests.get(
+            USER_API_URL,
+            headers={
+                "Authorization": f"token {access_token}",
+                "Accept": "application/vnd.github+json",
+            },
+            timeout=self.timeout,
+        )
+        return response.json()
 
 
-def exchange_code_for_token(code: str) -> str:
-    response = requests.post(
-        TOKEN_URL,
-        headers={"Accept": "application/json"},
-        data={
-            "client_id": CLIENT_ID,
-            "client_secret": CLIENT_SECRET,
-            "code": code,
-        },
-        timeout=REQUESTS_TIMEOUT,
-    )
-    data = response.json()
-    if "access_token" not in data:
-        msg = f"Token error: {data}"
-        logger.error(msg)
-        raise Exception(msg)
-    return data["access_token"]
-
-
-def fetch_github_user(access_token: str) -> dict:
-    response = requests.get(
-        USER_API_URL,
-        headers={
-            "Authorization": f"token {access_token}",
-            "Accept": "application/vnd.github+json",
-        },
-        timeout=REQUESTS_TIMEOUT,
-    )
-    return response.json()
+github = GitHubAPI(CLIENT_ID, CLIENT_SECRET, REQUESTS_TIMEOUT)

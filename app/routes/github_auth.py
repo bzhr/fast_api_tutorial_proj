@@ -6,11 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.models.github import GitHubUser
-from app.services.github_oauth import (
-    exchange_code_for_token,
-    fetch_github_user,
-    get_github_authorization_url,
-)
+from app.services.github_oauth import github
 from app.services.user import validate_and_store_github_user
 
 router = APIRouter()
@@ -28,15 +24,24 @@ async def home(request: Request):
             <body>
                 <h1>Welcome, {user["login"]}</h1>
                 <p><a href="/user/{user["login"]}">Go to your profile</a></p>
+                <form action="/logout" method="get">
+                    <button type="submit">Logout</button>
+                </form>
             </body>
         </html>
         """
     return '<a href="/login">Login with GitHub</a>'
 
 
+@router.get("/logout")
+async def logout(request: Request):
+    request.session.clear()
+    return RedirectResponse("/", status_code=302)
+
+
 @router.get("/login")
 async def login():
-    return RedirectResponse(get_github_authorization_url())
+    return RedirectResponse(github.get_authorization_url())
 
 
 @router.get("/callback")
@@ -45,17 +50,11 @@ async def callback(request: Request, code: str = None, db: Session = Depends(get
         logger.error("Missing code in oauth callback request")
         raise HTTPException(status_code=400, detail="Missing code")
 
-    access_token = exchange_code_for_token(code)
-    user_data = fetch_github_user(access_token)
+    access_token = github.exchange_code_for_token(code)
+    user_data = github.fetch_user(access_token)
     user = validate_and_store_github_user(user_data, db)
-    request.session["user"] = user
+    request.session["user"] = user_data
     return RedirectResponse(url=f"/user/{user.login}", status_code=302)
-
-
-@router.get("/logout")
-async def logout(request: Request):
-    request.session.clear()
-    return RedirectResponse("/")
 
 
 @router.get("/user/{login}", response_class=HTMLResponse)

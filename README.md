@@ -9,9 +9,17 @@ I use [pyenv](https://github.com/pyenv/pyenv) to setup the virtual env and insta
 4. Install third party dev libraries from the dev requirements file: `pip install -r requirement.txt`.
 5. Modify env.example to .env and update the variables inside if needed.
 6. Run the app: `uvicorn main:app --reload`
+7. For development pre-commit is used and it is installed in step 4. For development to set it up run: `pre-commit install`. `ruff` is used for both linting and formatting. The custom rules can be found in the `pyproject.toml` file.
 
 ## The API chosen and its authentication steps
 This app works with the Github OAuth API, so you will need to register an app from the "developers" tab in the settings of your Github settings. Once you create the app, you need to generate the "client secret" and store it in a safe place. The app client id and client secret are needed for the authentication process. These are stored as enviroment variables in the system or in the .env file.
 ## Instructions on how to run the script
 Run the app: `uvicorn main:app --reload`
 ## A brief explanation of the implemented design pattern.
+I've chosen the Adapter pattern in order to adapt the `requests` library and provide a clean interface for making requests to the Github API.
+> “The Adapter Pattern allows incompatible interfaces to work together by wrapping one with another expected interface.”
+
+Why this pattern?
+- Decouples your code from third-party libraries
+- Simplifies testing (you can mock your adapter instead of the library)
+- Makes refactoring easier (swap out the library without changing your app logic)
