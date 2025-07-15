@@ -1,0 +1,45 @@
+[tool.ruff]
+# Enable a comprehensive set of rules for linting.
+lint.select = ["E", "F", "I", "C", "B", "D", "N", "S", "W", "TCH", "ARG", "BLE", "COM", "DJ", "EM", "ERA", "ISC", "PIE", "PL", "PT", "PYI", "RSE", "SIM", "UP", "YTT"]
+lint.ignore = ["D100", "D101", "D102", "D103", "D104", "D107", "S105", "PLW0603"]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+# Setting the line length for both linting and formatting.
+line-length = 120
+lint.dummy-variable-rgx = "^(_+|unused)$"
+target-version = "py312"
+
+[tool.ruff.format]
+# Additional formatting-specific options can go here if needed.
+# For example:
+# indent-style = "space"
+# quote-style = "double"
+# skip-magic-trailing-comma = true
+# line-ending = "lf"
+# docstring-code-format = true
+# docstring-code-line-length = 100
+
+[tool.ruff.lint.isort]
+known-first-party = ["utils", "llamasetup"]  # Replace with your actual module names
+known-local-folder = ["app"]  # Define your local project imports
+combine-as-imports = true
+force-sort-within-sections = true
