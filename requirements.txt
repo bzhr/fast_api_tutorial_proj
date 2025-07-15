@@ -5,3 +5,5 @@ python-multipart
 itsdangerous
 python-dotenv
 requests
+sqlalchemy
+pydantic[email]

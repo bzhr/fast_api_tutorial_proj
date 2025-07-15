@@ -1,8 +1,11 @@
+import logging
 from urllib.parse import urlencode
 
 import requests
 
 from app.settings import AUTHORIZE_URL, CLIENT_ID, CLIENT_SECRET, REQUESTS_TIMEOUT, TOKEN_URL, USER_API_URL
+
+logger = logging.getLogger(__name__)
 
 
 def get_github_authorization_url():
@@ -27,6 +30,7 @@ def exchange_code_for_token(code: str) -> str:
     data = response.json()
     if "access_token" not in data:
         msg = f"Token error: {data}"
+        logger.error(msg)
         raise Exception(msg)
     return data["access_token"]
 

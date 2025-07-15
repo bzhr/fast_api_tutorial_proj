@@ -14,3 +14,4 @@ TOKEN_URL = "https://github.com/login/oauth/access_token"
 USER_API_URL = "https://api.github.com/user"
 
 REQUESTS_TIMEOUT = 10  # seconds
+SQLALCHEMY_DATABASE_URL = "sqlite:///./app.db"
