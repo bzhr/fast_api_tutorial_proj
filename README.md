@@ -1,5 +1,12 @@
-# Damilah applicaton project
-This is my solution for the oauth app project task for the Python software engineer at Damilah.
+# GH Oauth applicaton project
+This is a simple Python web app written in FastAPI with an SQLAlchemy ORM and an SQLite database. The app is implementing a sign in with a Github account using the OAuth protocol. After a successful login with Github account, the /user endpoint is requested, this data is stored in the DB and presented in a simple HTML interface.
+
+A simple FastAPI app can be written in one file, but here that is not the case. Here I am presenting the structure of a FastAPI larger project where each logical part lives in its own module.
+[![Watch a project walktrhough here.](https://img.youtube.com/vi/<VIDEO_ID>/0.jpg)](https://www.youtube.com/watch?v=<VIDEO_ID>)
+## Panels
+- Explorer
+- Code
+- Readme
 
 ## Setting up the project
 I use [pyenv](https://github.com/pyenv/pyenv) to setup the virtual env and install the specific python version. The project should work with most recent versions of Python and you don't have to use pyenv to create the virtual env, if you prefer something else.
