@@ -2,7 +2,7 @@
 This is a simple Python web app written in FastAPI with an SQLAlchemy ORM and an SQLite database. The app is implementing a sign in with a Github account using the OAuth protocol. After a successful login with Github account, the /user endpoint is requested, this data is stored in the DB and presented in a simple HTML interface.
 
 A simple FastAPI app can be written in one file, but here that is not the case. Here I am presenting the structure of a FastAPI larger project where each logical part lives in its own module.
-[![Watch a project walktrhough here.](https://img.youtube.com/vi/<VIDEO_ID>/0.jpg)](https://www.youtube.com/watch?v=<VIDEO_ID>)
+[![Watch a project walktrhough here.](video_placeholder.png)](https://drive.google.com/file/d/1HEFTV2_U_0WltTRuLLgkX-RI2-snoTpZ/view?usp=sharing)
 ## Panels
 - Explorer
 - Code
